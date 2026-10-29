@@ -75,7 +75,6 @@ fun AlternatePlayerStyle(
         PlayerStyle.POSTER -> PosterPlayerStyle(actions, modifier, preview)
         PlayerStyle.TIMELINE -> TimelinePlayerStyle(actions, modifier, preview)
         PlayerStyle.LYRICS -> LyricsPlayerStyle(actions, modifier, preview)
-        PlayerStyle.IPOD -> com.mochyy.mochymusic.ui.player.ipod.IpodPlayerStyle(modifier, preview)
         PlayerStyle.DEFAULT, PlayerStyle.TURNTABLE -> Unit
     }
 }

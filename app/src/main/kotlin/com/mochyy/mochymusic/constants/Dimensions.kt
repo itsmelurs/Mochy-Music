@@ -4,9 +4,6 @@ package com.mochyy.mochymusic.constants
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -33,8 +30,8 @@ val SmallGridThumbnailHeight = 104.dp
 val GridThumbnailHeight = 164.dp
 val AlbumThumbnailSize = 144.dp
 
-var ThumbnailCornerRadius by mutableStateOf(6.dp)
-var GridThumbnailCornerRadius by mutableStateOf(12.dp)
+val ThumbnailCornerRadius = 6.dp
+val GridThumbnailCornerRadius = 12.dp
 
 val PlayerHorizontalPadding = 32.dp
 

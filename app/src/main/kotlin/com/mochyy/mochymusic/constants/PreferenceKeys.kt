@@ -49,27 +49,9 @@ val SliderStyleKey = stringPreferencesKey("sliderStyle")
 val SquigglySliderKey = booleanPreferencesKey("squigglySlider")
 val SwipeToSongKey = booleanPreferencesKey("SwipeToSong")
 val SwipeToRemoveSongKey = booleanPreferencesKey("SwipeToRemoveSong")
-// what sliding a song does, per side (Settings > Customisation); the names are SongSwipeAction values
+// what sliding a song does, per side (Settings > Gesture); the names are SongSwipeAction values
 val SwipeRightActionKey = stringPreferencesKey("swipeRightAction")
 val SwipeLeftActionKey = stringPreferencesKey("swipeLeftAction")
-
-// the top layout of the home tab, picked in customisation settings
-enum class HomeStyle(val displayName: String) {
-    MOCHYY("Mochyy"),
-    LISTEN_NOW("Listen now"),
-    HOP_IN("Hop in"),
-}
-
-val HomeStyleKey = stringPreferencesKey("homeStyle")
-
-// how playlist and album headers are laid out at the top of the page
-enum class PlaylistStyle(val displayName: String) {
-    FLOW("Flow"),
-    CLASSIC("Classic"),
-    MINIMAL("Minimal"),
-}
-
-val PlaylistStyleKey = stringPreferencesKey("playlistStyle")
 val UseNewPlayerDesignKey= booleanPreferencesKey("useNewPlayerDesign")
 val UseNewMiniPlayerDesignKey = booleanPreferencesKey("useNewMiniPlayerDesign")
 val AppleMusicDarkChromeKey = booleanPreferencesKey("appleMusicDarkChrome")
@@ -82,8 +64,6 @@ val PauseOnMute = booleanPreferencesKey("pauseOnMute")
 val ResumeOnBluetoothConnectKey = booleanPreferencesKey("resumeOnBluetoothConnect")
 val StopPlaybackOnTaskRemovedKey = booleanPreferencesKey("stopPlaybackOnTaskRemoved")
 val KeepScreenOn = booleanPreferencesKey("keepScreenOn")
-// a swipe down anywhere on the open player closes it, not only from its top and cover (#121)
-val PlayerSwipeDownAnywhereKey = booleanPreferencesKey("playerSwipeDownAnywhere")
 val DeveloperModeKey = booleanPreferencesKey("developerMode")
 
 enum class SliderStyle {
@@ -563,13 +543,11 @@ enum class PlayerStyle(val displayName: String, val selectorName: String) {
     DEFAULT("Flagship", "Default"),
     /** the flagship with a record player for its cover, whose arm is the seek bar */
     TURNTABLE("Turntable", "Turntable"),
-    // the ipod classic, click wheel and all, browsing the library from inside the player
-    IPOD("iPod", "iPod"),
     POSTER("Poster", "Poster"),
     TIMELINE("Timeline", "Timeline"),
     LYRICS("Lyrics", "Lyrics stage");
 
-    val editable: Boolean get() = this == DEFAULT || this == TURNTABLE || this == POSTER || this == IPOD
+    val editable: Boolean get() = this == DEFAULT || this == TURNTABLE || this == POSTER
 
     /** drawn by the flagship's own player (cover, controls, card), not a design of its own */
     val flagshipFamily: Boolean get() = this == DEFAULT || this == TURNTABLE
@@ -585,22 +563,6 @@ enum class PlayerStyle(val displayName: String, val selectorName: String) {
 }
 
 val PlayerStyleKey = stringPreferencesKey("playerStyle")
-
-// the ipod player's body colours, ipod.js's three plus a pitch black one with a dark screen
-enum class IpodTheme { SILVER, BLACK, U2, TRUE_DARK }
-
-val IpodThemeKey = stringPreferencesKey("ipodTheme")
-
-// the click wheel's own colour, or whatever the body's theme comes with
-enum class IpodWheelColor { THEME, WHITE, BLACK, RED }
-
-val IpodWheelColorKey = stringPreferencesKey("ipodWheelColor")
-
-// the screen grows down to the wheel on tall phones instead of keeping the classic's shape
-val IpodTallScreenKey = booleanPreferencesKey("ipodTallScreen")
-
-// the soft shading round the edges of the body
-val IpodShadowKey = booleanPreferencesKey("ipodShadow")
 
 /** the Poster's bars round its cover, moving with the music; off until turned on in its editor */
 val PosterVisualizerKey = booleanPreferencesKey("posterVisualizer")

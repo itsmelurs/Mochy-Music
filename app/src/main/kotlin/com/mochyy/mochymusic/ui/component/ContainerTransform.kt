@@ -16,10 +16,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -37,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 
 /** every Home cover card is drawn with this radius, so the open transition starts from it */
-var HomeCardCornerRadius by mutableStateOf(25.dp)
+val HomeCardCornerRadius = 20.dp
 
 /** the soft spring a screen grows out of its card on (~0.6s), interruptible like iOS opening an app */
 const val ContainerOpenDamping = 0.88f

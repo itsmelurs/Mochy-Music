@@ -81,9 +81,6 @@ private val ChevronDepth = 10.dp
 private val HandleTargetWidth = 150.dp
 private val HandleTargetHeight = 28.dp
 
-/** How far open the sheet has to look for a tap on the handle to close it (the mini player sits at 0). */
-private const val HandleTapMinProgress = 0.9f
-
 /** How often the colour behind it is looked at again while the player is open. */
 private const val HandleSampleIntervalMs = 1_500L
 
@@ -196,11 +193,7 @@ fun PlayerHandle(
                     // Only on the open player: collapsed, this spot is inside the mini player,
                     // whose tap opens it. The down isn't consumed, so a drag from here still
                     // reaches the sheet and closes it.
-                    // Gated on how open the sheet looks, not on where it was last sent: a player
-                    // that shows open while its anchor says otherwise (a cut-short animation) has
-                    // to stay closable from here - the handle is the one way out that's always
-                    // on screen (#109).
-                    if (!currentEnabled() || sheet.progress < HandleTapMinProgress) {
+                    if (!currentEnabled() || !sheet.isExpandedOrExpanding || sheet.progress < 0.95f) {
                         return@awaitEachGesture
                     }
                     pressed = true
@@ -310,7 +303,7 @@ private suspend fun copyWindow(window: Window, rect: android.graphics.Rect, bitm
         }
     }
 
-internal tailrec fun Context.findActivity(): Activity? = when (this) {
+private tailrec fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null

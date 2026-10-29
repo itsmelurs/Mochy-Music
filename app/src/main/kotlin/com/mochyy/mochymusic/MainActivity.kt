@@ -139,8 +139,6 @@ import com.mochyy.mochymusic.R
 import com.mochyy.mochymusic.constants.AppBarHeight
 import com.mochyy.mochymusic.constants.AppLanguageKey
 import com.mochyy.mochymusic.constants.DarkModeKey
-import com.mochyy.mochymusic.ui.utils.defaultMotionEnter
-import com.mochyy.mochymusic.ui.utils.defaultMotionExit
 import com.mochyy.mochymusic.ui.theme.ForceDarkTheme
 import com.mochyy.mochymusic.constants.DefaultOpenTabKey
 import com.mochyy.mochymusic.constants.CropAlbumArtKey
@@ -459,23 +457,9 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Settings > Appearance > Animation, for the page transitions and the lyrics' blur (#10)
-        val animationsEnabled by rememberPreference(
-            com.mochyy.mochymusic.constants.EnableElementBlurAnimatorKey,
-            defaultValue = true,
-        )
-        SideEffect { com.mochyy.mochymusic.ui.utils.AppMotion.enabled = animationsEnabled }
-
         // "Keep screen on" (the player's menu, or a chevron button): the phone doesn't sleep while
         // Mochy is on screen. A window flag only holds while the app is in front, which is the point.
         val keepScreenOn by rememberPreference(com.mochyy.mochymusic.constants.KeepScreenOn, defaultValue = false)
-        val coverCornerRadius by rememberPreference(com.mochyy.mochymusic.constants.ThumbnailCornerRadiusKey, defaultValue = 25f)
-        SideEffect {
-            val r = coverCornerRadius.coerceIn(0f, 45f)
-            com.mochyy.mochymusic.ui.component.HomeCardCornerRadius = r.dp
-            com.mochyy.mochymusic.constants.GridThumbnailCornerRadius = (r * 0.6f).coerceIn(0f, 28f).dp
-            com.mochyy.mochymusic.constants.ThumbnailCornerRadius = (r * 0.35f).coerceIn(0f, 16f).dp
-        }
         val rootView = androidx.compose.ui.platform.LocalView.current
         DisposableEffect(keepScreenOn) {
             rootView.keepScreenOn = keepScreenOn
@@ -1207,55 +1191,47 @@ class MainActivity : ComponentActivity() {
                                         // each page slides by the tab it belongs to, not by its own route: an
                                         // album open in the Library moves like the Library when you switch tabs
                                         enterTransition = {
-                                            defaultMotionEnter {
-                                                val stack = navController.currentBackStack.value
-                                                val currentRouteIndex = tabOwnership.indexOf(targetState, stack)
-                                                val previousRouteIndex = tabOwnership.indexOf(initialState, stack)
+                                            val stack = navController.currentBackStack.value
+                                            val currentRouteIndex = tabOwnership.indexOf(targetState, stack)
+                                            val previousRouteIndex = tabOwnership.indexOf(initialState, stack)
 
-                                                if (currentRouteIndex == -1 || currentRouteIndex >= previousRouteIndex)
-                                                    slideInHorizontally { it / 8 } + fadeIn(tween(200))
-                                                else
-                                                    slideInHorizontally { -it / 8 } + fadeIn(tween(200))
-                                            }
+                                            if (currentRouteIndex == -1 || currentRouteIndex >= previousRouteIndex)
+                                                slideInHorizontally { it / 8 } + fadeIn(tween(200))
+                                            else
+                                                slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                         },
 
                                         exitTransition = {
-                                            defaultMotionExit {
-                                                val stack = navController.currentBackStack.value
-                                                val currentRouteIndex = tabOwnership.indexOf(initialState, stack)
-                                                val targetRouteIndex = tabOwnership.indexOf(targetState, stack)
+                                            val stack = navController.currentBackStack.value
+                                            val currentRouteIndex = tabOwnership.indexOf(initialState, stack)
+                                            val targetRouteIndex = tabOwnership.indexOf(targetState, stack)
 
-                                                if (targetRouteIndex == -1 || targetRouteIndex >= currentRouteIndex)
-                                                    slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
-                                                else
-                                                    slideOutHorizontally { it / 8 } + fadeOut(tween(200))
-                                            }
+                                            if (targetRouteIndex == -1 || targetRouteIndex >= currentRouteIndex)
+                                                slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
+                                            else
+                                                slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                         },
 
                                         popEnterTransition = {
-                                            defaultMotionEnter {
-                                                val stack = navController.currentBackStack.value
-                                                val currentRouteIndex = tabOwnership.indexOf(targetState, stack)
-                                                val previousRouteIndex = tabOwnership.indexOf(initialState, stack)
+                                            val stack = navController.currentBackStack.value
+                                            val currentRouteIndex = tabOwnership.indexOf(targetState, stack)
+                                            val previousRouteIndex = tabOwnership.indexOf(initialState, stack)
 
-                                                if (previousRouteIndex != -1 && previousRouteIndex < currentRouteIndex)
-                                                    slideInHorizontally { it / 8 } + fadeIn(tween(200))
-                                                else
-                                                    slideInHorizontally { -it / 8 } + fadeIn(tween(200))
-                                            }
+                                            if (previousRouteIndex != -1 && previousRouteIndex < currentRouteIndex)
+                                                slideInHorizontally { it / 8 } + fadeIn(tween(200))
+                                            else
+                                                slideInHorizontally { -it / 8 } + fadeIn(tween(200))
                                         },
 
                                         popExitTransition = {
-                                            defaultMotionExit {
-                                                val stack = navController.currentBackStack.value
-                                                val currentRouteIndex = tabOwnership.indexOf(initialState, stack)
-                                                val targetRouteIndex = tabOwnership.indexOf(targetState, stack)
+                                            val stack = navController.currentBackStack.value
+                                            val currentRouteIndex = tabOwnership.indexOf(initialState, stack)
+                                            val targetRouteIndex = tabOwnership.indexOf(targetState, stack)
 
-                                                if (currentRouteIndex != -1 && currentRouteIndex < targetRouteIndex)
-                                                    slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
-                                                else
-                                                    slideOutHorizontally { it / 8 } + fadeOut(tween(200))
-                                            }
+                                            if (currentRouteIndex != -1 && currentRouteIndex < targetRouteIndex)
+                                                slideOutHorizontally { -it / 8 } + fadeOut(tween(200))
+                                            else
+                                                slideOutHorizontally { it / 8 } + fadeOut(tween(200))
                                         },
                                         modifier = Modifier
                                             .glassRoot(glassState, isActive = { true })
@@ -1509,7 +1485,6 @@ val SubSettingsRoutes = setOf(
     "developer_playground",
     "storage_settings",
     "gesture_settings",
-    "customisation_settings",
     // Audio Lab keeps the bar, as in its designs
     "audio_lab",
     "equalizer",

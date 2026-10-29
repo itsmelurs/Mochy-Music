@@ -162,7 +162,7 @@ fun AudioLabPage(
                         }
                     }
                     TopScrim(scroll, headerHeight, statusTop)
-                    LabBackButton(onBack, Modifier.padding(start = inset, top = statusTop + 14.dp))
+                    BackButton(onBack, Modifier.padding(start = inset, top = statusTop + 14.dp))
                 }
             }.map { it.measure(constraints) }
 
@@ -308,9 +308,8 @@ private fun TopScrim(scroll: ScrollState, headerHeight: Int, statusTop: Dp) {
     )
 }
 
-// the round grey back button, shared with the customize page
 @Composable
-internal fun LabBackButton(onBack: () -> Unit, modifier: Modifier = Modifier) {
+private fun BackButton(onBack: () -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .size(BackSize)

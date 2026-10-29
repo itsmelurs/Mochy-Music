@@ -167,9 +167,6 @@ private val MiniSwipeFling = 500.dp
  */
 private val PlayerCloseStrip = 64.dp
 
-// the sheet's content is fully faded out up to here, see BottomSheet
-private const val StyleHiddenBelow = 0.25f
-
 /** The old gap from the seek bar down to the buttons (24dp plus the bar's lift). */
 private val TransportGapAboveRow = 24.dp + SeekBarLift
 
@@ -415,13 +412,6 @@ private fun PlayerSheet(
     // it is: collapsed, the pages are unmounted (still remembered) and the seek bar holds still.
     val sheetShowing by remember(state) { derivedStateOf { state.progress > 0f } }
 
-    // Settings > Customise > Gesture: a swipe down anywhere on the open player closes it (#121)
-    val (swipeDownAnywhere) = rememberPreference(
-        com.mochyy.mochymusic.constants.PlayerSwipeDownAnywhereKey,
-        defaultValue = false,
-    )
-    val currentSwipeDownAnywhere by androidx.compose.runtime.rememberUpdatedState(swipeDownAnywhere)
-
     val isSheetInTransition by remember(state) {
         derivedStateOf { !state.isExpanded && !state.isCollapsed && !state.isDismissed }
     }
@@ -571,7 +561,7 @@ private fun PlayerSheet(
         //    pushes the page back into the card the same way, and a swipe up opens the page the
         //    card offers.
         //  - Only the top of the player closes it with a swipe down: the strip under the status bar
-        //    (down to the cover's top), or the whole cover when it's the edge-to-edge or squared one. A swipe
+        //    (down to the cover's top), or the whole cover when it's the edge-to-edge one. A swipe
         //    anywhere used to close it, and a slightly crooked swipe over the controls threw the
         //    whole player away.
         val screenHeightPx = with(density) { screenHeight.toPx() }
@@ -681,13 +671,7 @@ private fun PlayerSheet(
                     val coverTop = if (pageOpen) null else rects.cover?.top
                     val stripBottom = maxOf(currentCloseStripBottom, coverTop ?: 0f)
                     if (start.y < stripBottom) return true
-                    if (pageOpen) return false
-                    // chosen in Settings > Gesture: the whole player, as it was before the top-only
-                    // close. Swipes up still open the card's page, sideways ones still skip.
-                    if (currentSwipeDownAnywhere) return true
-                    // the squared cover is a card you can pull down too, sideways on it still swipes songs
-                    if (currentCoverStyle == PlayerCoverStyle.SQUARED) return rects.cover?.contains(start) == true
-                    if (currentCoverStyle != PlayerCoverStyle.EDGE_TO_EDGE) return false
+                    if (pageOpen || currentCoverStyle != PlayerCoverStyle.EDGE_TO_EDGE) return false
                     // the edge-to-edge cover is the player's top: all of it, down to the title
                     val controlsTop = rects.controls?.top ?: return false
                     return start.y < controlsTop
@@ -865,14 +849,6 @@ private fun PlayerSheet(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        // not placed while the sheet is a pill: it's invisible there anyway, and placed it sat
-                        // over the mini player and took the taps meant for its play and skip buttons
-                        .layout { measurable, constraints ->
-                            val placeable = measurable.measure(constraints)
-                            layout(placeable.width, placeable.height) {
-                                if (state.progress > StyleHiddenBelow) placeable.place(0, 0)
-                            }
-                        }
                         .pointerInput(styleOpen) {
                             if (!styleOpen) return@pointerInput
                             val closePx = 8.dp.toPx()
@@ -925,8 +901,7 @@ private fun PlayerSheet(
                     onCoveredChange = { styleCovered = it },
                     onSwitchSource = { showLyricsSource = true },
                 )
-                // the ipod has its own chevron on its body, a bar over it would just be in the way
-                if (playerStyle != PlayerStyle.IPOD) PlayerHandle(
+                PlayerHandle(
                     state = handleState,
                     sheet = state,
                     statusBarTop = statusBarTopInset,
@@ -1526,13 +1501,6 @@ private fun PlayerSheet(
                     studio.settleOn(focused, restyled) {
                         studio.openSheet(com.mochyy.mochymusic.ui.player.studio.StudioSheet.POSTER)
                     }
-                } else if (playerStyles.getOrNull(focused) == PlayerStyle.IPOD) {
-                    // the ipod's colours, wheel, screen and shadow, in a sheet over the ipod itself
-                    val restyled = playerStyle != PlayerStyle.IPOD
-                    if (restyled) onPlayerStyleChange(PlayerStyle.IPOD)
-                    studio.settleOn(focused, restyled) {
-                        studio.openSheet(com.mochyy.mochymusic.ui.player.studio.StudioSheet.IPOD)
-                    }
                 } else if (playerStyles.getOrNull(focused) == PlayerStyle.TURNTABLE) {
                     // its one edit is the disc label: back to the player, with the label's sheet
                     val restyled = playerStyle != PlayerStyle.TURNTABLE
@@ -1549,7 +1517,7 @@ private fun PlayerSheet(
             },
         )
         // the Poster's sheet, over the poster itself
-        if (playerStyle == PlayerStyle.POSTER || playerStyle == PlayerStyle.IPOD) {
+        if (playerStyle == PlayerStyle.POSTER) {
             com.mochyy.mochymusic.ui.player.studio.StyleSheets(studio)
         }
         if (playerStyle.flagshipFamily) {

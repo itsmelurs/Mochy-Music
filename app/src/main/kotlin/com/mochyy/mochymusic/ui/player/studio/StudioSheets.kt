@@ -206,7 +206,6 @@ fun StudioSheets(
             }
 
             StudioSheet.POSTER -> PosterOptions()
-            StudioSheet.IPOD -> IpodOptions()
 
         }
         }
@@ -219,13 +218,12 @@ fun StudioSheets(
  */
 @Composable
 fun StyleSheets(studio: PlayerStudioState) {
-    val sheet = studio.sheet
-    if (sheet != StudioSheet.POSTER && sheet != StudioSheet.IPOD) return
+    if (studio.sheet != StudioSheet.POSTER) return
     MenuSheetSurface(onDismiss = { studio.sheet = null }, wrapHeight = true) { _ ->
         androidx.compose.runtime.CompositionLocalProvider(
             androidx.compose.material3.LocalTextStyle provides studioText(StudioType.Body),
         ) {
-            if (sheet == StudioSheet.IPOD) IpodOptions() else PosterOptions()
+            PosterOptions()
         }
     }
 }
@@ -247,7 +245,7 @@ private fun ColumnScope.PosterOptions() {
 
 /** "What to change with": the title, what it's for, the options, and Done */
 @Composable
-internal fun ColumnScope.OptionSheet(
+private fun ColumnScope.OptionSheet(
     title: String,
     subtitle: String? = null,
     content: @Composable ColumnScope.() -> Unit,
@@ -284,7 +282,7 @@ internal fun ColumnScope.OptionSheet(
 
 /** one choice: its preview, and SELECTED on the one in use */
 @Composable
-internal fun OptionRow(
+private fun OptionRow(
     selected: Boolean,
     onClick: () -> Unit,
     caption: String? = null,
@@ -317,7 +315,7 @@ internal fun OptionRow(
 }
 
 @Composable
-internal fun TwoLines(title: String, body: String) {
+private fun TwoLines(title: String, body: String) {
     Column {
         Text(title, color = Color.White, style = studioText(StudioType.Body))
         if (body.isNotBlank()) Text(body, color = Color.White.copy(alpha = 0.65f), style = studioText(StudioType.Caption, FontWeight.Normal), maxLines = 2)
@@ -325,7 +323,7 @@ internal fun TwoLines(title: String, body: String) {
 }
 
 @Composable
-internal fun SwitchRow(option: CoverOption.Switch) {
+private fun SwitchRow(option: CoverOption.Switch) {
     val parent = option.parent
     val parentOn = if (parent != null) rememberPreference(parent.key, defaultValue = parent.default).value else true
     var stored by rememberPreference(option.key, defaultValue = option.default)

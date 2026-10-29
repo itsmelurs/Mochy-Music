@@ -66,13 +66,7 @@ constructor(
     val artists = database.artists(ArtistSortType.CREATE_DATE, true)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    // saved albums first, newest on top, then the ones your songs come from; a saved album used to be missing here
-    val albums = combine(
-        database.albumsLiked(AlbumSortType.CREATE_DATE, true),
-        database.albums(AlbumSortType.CREATE_DATE, true),
-    ) { saved, library ->
-        (saved.sortedByDescending { it.album.bookmarkedAt } + library).distinctBy { it.id }
-    }
+    val albums = database.albums(AlbumSortType.CREATE_DATE, true)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val playlists = database.playlists(PlaylistSortType.CREATE_DATE, true)
